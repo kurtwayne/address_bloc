@@ -15,6 +15,7 @@ require_relative '../models/address_book'
      puts "3 - Search for an entry"
      puts "4 - Import entries from a CSV"
      puts "5 - Exit"
+     puts "6 - View Entry Number n"
      print "Enter your selection: "
 
      selection = gets.to_i
@@ -38,6 +39,10 @@ require_relative '../models/address_book'
        main_menu
      when 5
        puts "Good-bye!"
+     when 6
+       system "clear"
+       view_entry_number
+       main_menu
  # #8
        exit(0)
  # #9
@@ -83,6 +88,20 @@ require_relative '../models/address_book'
   end
 
   def read_csv
+  end
+
+  def view_entry_number
+    system "clear"
+    puts "Enter an Entry Number"
+    print "Entry Number: "
+    entry_number = gets.chomp
+    # I need to then search for the entry in the address book
+    @address_book.view_all_entries.each do |number|
+      if number == "#{entry_number}"
+        puts number
+      end
+    end
+      system "clear"
   end
 
   def entry_submenu(entry)
