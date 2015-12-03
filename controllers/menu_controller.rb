@@ -14,8 +14,8 @@ require_relative '../models/address_book'
      puts "2 - Create an entry"
      puts "3 - Search for an entry"
      puts "4 - Import entries from a CSV"
-     puts "5 - Exit"
-     puts "6 - View Entry Number n"
+     puts "5 - Search for Entry by Number"
+     puts "6 - Exit"
      print "Enter your selection: "
 
      selection = gets.to_i
@@ -38,11 +38,12 @@ require_relative '../models/address_book'
        read_csv
        main_menu
      when 5
-       puts "Good-bye!"
-     when 6
        system "clear"
        view_entry_number
        main_menu
+       puts "Good-bye!"
+     when 6
+       puts "Good-bye!"
  # #8
        exit(0)
  # #9
@@ -92,17 +93,21 @@ require_relative '../models/address_book'
 
   def view_entry_number
     system "clear"
-    puts "Enter an Entry Number"
-    print "Entry Number: "
-    entry_number = gets.chomp
-    # I need to then search for the entry in the address book
-    @address_book.view_all_entries.each do |number|
-      if number == "#{entry_number}"
-        puts number
-      end
-    end
+    puts "Welcome, Please Enter an Entry Number: "
+    # remove the trailing whitespace and convert to an integer using .to_i
+    selection = gets.chomp.to_i
+    # Find the entry in the address book
+    if selection < @address_book.entries.count
+      puts @address_book.entries[selection]
+      puts "Press Enter to Return to the Main Menu"
+      gets.chomp
       system "clear"
-  end
+    else
+      puts "#{selection} not valid input"
+      view_entry_number
+    end
+end
+
 
   def entry_submenu(entry)
     # #16 display the submenu options.
