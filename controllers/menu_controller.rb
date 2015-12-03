@@ -14,7 +14,8 @@ require_relative '../models/address_book'
      puts "2 - Create an entry"
      puts "3 - Search for an entry"
      puts "4 - Import entries from a CSV"
-     puts "5 - Exit"
+     puts "5 - Search for Entry by Number"
+     puts "6 - Exit"
      print "Enter your selection: "
 
      selection = gets.to_i
@@ -37,6 +38,11 @@ require_relative '../models/address_book'
        read_csv
        main_menu
      when 5
+       system "clear"
+       view_entry_number
+       main_menu
+       puts "Good-bye!"
+     when 6
        puts "Good-bye!"
  # #8
        exit(0)
@@ -84,6 +90,37 @@ require_relative '../models/address_book'
 
   def read_csv
   end
+
+  def view_entry_number
+    system "clear"
+    puts "Welcome, Please Enter an Entry Number: "
+    # remove the trailing whitespace and convert to an integer using .to_i
+    selection = gets.chomp.to_i
+    # Find the entry in the address book by taking the selection, calling the address book to count the number of addresses.
+    if selection < @address_book.entries.count
+      #If there is an entry for that number it will put that entry on the screen
+      puts @address_book.entries[selection]
+      puts "Press Enter to Return to the Main Menu"
+      gets.chomp
+      system "clear"
+    else
+      # If the entry is invalid because there are not that many number of entries, it will take them back to try again
+      puts "#{selection} not valid input"
+      puts "Press Enter to Return to the Main Menu or 1 to Try Another Entry Number"
+      gets.chomp
+      # I got tired of having no where to go if I typed in a wrong response so I created the below case selection.
+      case selection
+        when 1
+          view_entry_number
+          system "clear"
+        else
+          system "clear"
+          puts "That is not a valid entry, try again"
+          main_menu
+      end
+    end
+end
+
 
   def entry_submenu(entry)
     # #16 display the submenu options.
