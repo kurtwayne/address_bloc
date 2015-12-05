@@ -66,6 +66,10 @@ class AddressBook
      return nil
    end
 
+   def detonate_entries
+     @entries = []
+   end
+
    def remove_entry(name, phone_number, email)
      # 1. find the index, if any, where we have a matching entry
      # 2. if index exists, delete it

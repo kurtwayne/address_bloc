@@ -15,7 +15,8 @@ require_relative '../models/address_book'
      puts "3 - Search for an entry"
      puts "4 - Import entries from a CSV"
      puts "5 - Search for Entry by Number"
-     puts "6 - Exit"
+     puts "6 - Don't go here!"
+     puts "7 - Exit"
      print "Enter your selection: "
 
      selection = gets.to_i
@@ -41,8 +42,11 @@ require_relative '../models/address_book'
        system "clear"
        view_entry_number
        main_menu
-       puts "Good-bye!"
      when 6
+       system "clear"
+       big_red_button
+       main_menu
+     when 7
        puts "Good-bye!"
  # #8
        exit(0)
@@ -86,10 +90,92 @@ require_relative '../models/address_book'
   end
 
   def search_entries
+    # Prompt the user for entry
+    print "Search by name: "
+    name = gets.chomp
+    # Searches through the our iterative search for the name
+    match = @address_book.iterative_search(name)
+    system "clear"
+    # if/else statement in case of match.  See search search_submenu for what happens when the match is made.
+    if match
+       puts match.to_s
+       search_submenu(match)
+     else
+       puts "No match found for #{name}"
+     end
   end
 
+  def search_submenu(entry)
+    # Prompts user for input on the searched entry.
+    puts "\nd - delete entry"
+    puts "e - edit this entry"
+    puts "m - return to main menu"
+    selection = gets.chomp
+    # We use a case statement and take a specific action basked on input. On "d" and "e" we take action in seperate methods found in this menu_controller program.
+    case selection
+     when "d"
+       system "clear"
+       delete_entry(entry)
+       main_menu
+     when "e"
+       edit_entry(entry)
+       system "clear"
+       main_menu
+     when "m"
+       system "clear"
+       main_menu
+     else
+       system "clear"
+       puts "#{selection} is not a valid input"
+       puts entry.to_s
+       search_submenu(entry)
+     end
+   end
+
   def read_csv
+    # First, we prompt the user to enter a name of a CSV file to import.
+    print "Enter CSV File to import: "
+    file_name = gets.chomp
+    # Second, we check to see if the file name is empty. If it is then we return the user back to the main menu.
+    if file_name.empty?
+      system "clear"
+      puts "No CSV file read"
+      main_menu
+    end
+    # Third, we import the specified file with import_from_csv on address_book. We then clear the screen and print the number of entries that were read from the file.
+    begin # begin will protect the program from crashing if an exception is thrown.
+      entry_count = @address_book.import_from_csv(file_name).count
+      system "clear"
+      puts "#{entry_count} new entries added from #{file_name}"
+    rescue # Our begin and rescue block catches potential exceptions and handles them by printing an error message and calling import_from_csv again.
+      puts "#{file_name} is not a valid CSV file, please enter the name of a valide CSV file."
+      read_csv
+    end
   end
+
+  # We remove entry from address_book and print out a message to the user that says entry has been removed. Let's add the ability to edit an entry
+  def delete_entry(entry)
+     @address_book.entries.delete(entry)
+     puts "#{entry.name} has been deleted"
+   end
+
+   def edit_entry(entry)
+     # Grab the new updated entry information
+     print "Updated name: "
+     name = gets.chomp
+     print "Updated phone number: "
+     phone_number = gets.chomp
+     print "Updated email: "
+     email = gets.chomp
+     # We use !attribute.empty? to set attributes on entry only if a valid attribute was read from user input.
+     entry.name = name if !name.empty?
+     entry.phone_number = phone_number if !phone_number.empty?
+     entry.email = email if !email.empty?
+     system "clear"
+     # We then display the updated entry.
+     puts "Updated entry:"
+     puts entry
+   end
 
   def view_entry_number
     system "clear"
@@ -119,8 +205,45 @@ require_relative '../models/address_book'
           main_menu
       end
     end
-end
+  end
 
+  # The detonation assignment for lesson 23.
+  def big_red_button
+    system "clear"
+    puts "I told you not to got here. Push the button?"
+    puts "y - for yes"
+    puts "n - for no"
+    selection = gets.chomp
+    case selection
+      when "y"
+        button_submenu
+        system "clear"
+      when "n"
+        system "clear"
+        puts "Thank goodness"
+        main_menu
+      else
+        system "clear"
+        main_menu
+    end
+  end
+
+  def button_submenu
+    puts "Last chance, Bub!"
+    puts "d - delete all entries"
+    puts "m - return to main menu"
+    selection = gets.chomp
+
+    case selection
+    when "d"
+      @address_book.detonate_entries
+      system "clear"
+      main_menu
+    when "m"
+      system "clear"
+      main_menu
+    end
+  end
 
   def entry_submenu(entry)
     # #16 display the submenu options.
@@ -137,8 +260,13 @@ end
      when "n"
  # #19 we'll handle deleting and editing in another checkpoint, for now the user will be shown the next entry
      when "d"
+       # When the user pressed "d" it will delete the entry and then return to view_all_entries.
+       delete_entry(entry)
      when "e"
  # #20 we return the user to the main menu.
+     # We call edit_entry when a user presses e. We then display a sub-menu with entry_submenu for the entry under edit.
+      edit_entry(entry)
+      entry_submenu(entry)
      when "m"
        system "clear"
        main_menu

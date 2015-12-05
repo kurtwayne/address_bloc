@@ -57,6 +57,18 @@ require_relative '../models/address_book'
 
    end
 
+   # Assignment 23 test
+   context "#detonate_entries" do
+     it "should delete all entries in addressbook" do
+       book.add_entry("Zill", "355-555-4854", "zill@blocmail.com")
+       book.add_entry("Dill", "155-555-4854", "dill@blocmail.com")
+       book.add_entry("Jill", "255-555-4854", "jill@blocmail.com")
+
+       book.detonate_entries
+       expect(book.entries.size).to eq 0
+     end
+   end
+
    # Test that AddressBook's .import_from_csv() method is working as expected
    describe "#import_from_csv" do
      it "imports the correct number of entries" do
